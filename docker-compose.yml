@@ -1,0 +1,51 @@
+version: "3.7"
+
+name: mysqlitto
+
+services:
+  db:
+    image: db
+    build: ./mysql
+    container_name: db
+    restart: unless-stopped
+    networks:
+      - mysqlitto
+    volumes:
+      - db-data:/var/lib/mysql
+  mqtt:
+    image: mqtt
+    build: ./mqtt
+    container_name: mqtt
+    restart: unless-stopped
+    networks:
+      - mysqlitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - mqtt-config:/mosquitto/config
+      - mqtt-data:/mosquitto/data
+      - mqtt-log:/mosquitto/log
+  node:
+    image: node
+    build: ./node
+    container_name: node
+    restart: unless-stopped
+    networks:
+      - mysqlitto
+    depends_on:
+      - db
+      - mqtt
+
+volumes:
+  db-data:
+    name: db-data
+  mqtt-config:
+    name: mqtt-config
+  mqtt-data:
+    name: mqtt-data
+  mqtt-log:
+    name: mqtt-log
+
+networks:
+  mysqlitto:
+    name: mysqlitto

@@ -1,0 +1,9 @@
+user superuser
+topic readwrite #
+
+user mysqlitto
+topic read /devices/+/state
+
+#user device
+#topic readwrite /devices/+/#
+pattern readwrite /devices/%c/#
